@@ -1,6 +1,7 @@
 package dev.pitlor.gamekit_spring_boot_starter
 
 import kotlinx.coroutines.runBlocking
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.context.event.EventListener
 import org.springframework.messaging.handler.annotation.*
 import org.springframework.messaging.simp.SimpMessagingTemplate
@@ -22,7 +23,8 @@ open class StaticFiles {
 }
 
 @Controller
-open class BaseController(private val server: Server, private val socket: SimpMessagingTemplate) {
+@ConditionalOnBean(Server::class)
+class BaseController(private val server: Server, private val socket: SimpMessagingTemplate) {
     @EventListener
     fun onConnect(e: SessionConnectEvent) {
         if (e.user == null) return
