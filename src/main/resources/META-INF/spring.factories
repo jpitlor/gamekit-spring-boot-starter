@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  dev.pitlor.gamekit_spring_boot_starter.SocketConfig,\
+  dev.pitlor.gamekit_spring_boot_starter.StaticFiles,\
+  dev.pitlor.gamekit_spring_boot_starter.BaseController,\
+  dev.pitlor.gamekit_spring_boot_starter.CustomPrincipal

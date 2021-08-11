@@ -1,3 +1,5 @@
+package dev.pitlor.gamekit_spring_boot_starter
+
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ModelAttribute
 import java.security.Principal

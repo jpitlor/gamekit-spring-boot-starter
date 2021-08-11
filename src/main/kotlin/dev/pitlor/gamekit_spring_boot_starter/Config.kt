@@ -1,3 +1,5 @@
+package dev.pitlor.gamekit_spring_boot_starter
+
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration
@@ -13,6 +15,8 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
 import java.util.*
+
+const val SETTING_CONNECTED = "connected"
 
 @ConfigurationProperties(prefix = "dev.pitlor.gamekit")
 open class GameKitProperties {
@@ -59,5 +63,3 @@ open class SocketConfig(private val properties: GameKitProperties) : WebSocketMe
         })
     }
 }
-
-const val SETTING_CONNECTED = "connected"

@@ -1,3 +1,5 @@
+package dev.pitlor.gamekit_spring_boot_starter
+
 import kotlinx.coroutines.runBlocking
 import org.springframework.context.event.EventListener
 import org.springframework.messaging.handler.annotation.*
