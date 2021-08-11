@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>dev.pitlor</groupId>
-	<artifactId>gamekit</artifactId>
+	<artifactId>gamekit-spring-boot-starter</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<name>GameKit</name>
+	<name>GameKit Spring Boot Starter</name>
 	<description>A framework for creating real time web based games easily</description>
-	<url>https://github.com/piticent123/gamekit</url>
+	<url>https://github.com/piticent123/gamekit-spring-boot-starter</url>
 
 	<properties>
 		<maven.compiler.source>16</maven.compiler.source>

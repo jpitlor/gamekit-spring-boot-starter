@@ -1,7 +1,5 @@
 package dev.pitlor.gamekit_spring_boot_starter
 
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
@@ -18,35 +16,16 @@ import java.util.*
 
 const val SETTING_CONNECTED = "connected"
 
-@ConfigurationProperties(prefix = "dev.pitlor.gamekit")
-open class GameKitProperties {
-    /**
-     * Endpoint that your client will use to connect to the websocket server
-     */
-    var wsEndpoint: String = "/websocket-server"
-
-    /**
-     * Prefix on subscribable routes
-     */
-    var subscriptionPrefix: String = "/topic"
-
-    /**
-     * Prefix on non-subscribable routes
-     */
-    var routePrefix: String = "/app"
-}
-
 @Configuration
 @EnableWebSocketMessageBroker
-@EnableConfigurationProperties(GameKitProperties::class)
-open class SocketConfig(private val properties: GameKitProperties) : WebSocketMessageBrokerConfigurer {
+open class SocketConfig : WebSocketMessageBrokerConfigurer {
     override fun configureMessageBroker(registry: MessageBrokerRegistry) {
-        registry.enableSimpleBroker(properties.subscriptionPrefix)
-        registry.setApplicationDestinationPrefixes(properties.routePrefix, properties.subscriptionPrefix)
+        registry.enableSimpleBroker("/topic")
+        registry.setApplicationDestinationPrefixes("/app", "/topic")
     }
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-        registry.addEndpoint(properties.wsEndpoint).setAllowedOriginPatterns("*").withSockJS()
+        registry.addEndpoint("/websocket-server").setAllowedOriginPatterns("*").withSockJS()
     }
 
     override fun configureClientInboundChannel(registration: ChannelRegistration) {

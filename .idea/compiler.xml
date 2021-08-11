@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="gamekit" target="16" />
       <module name="gamekit-parent" target="16" />
       <module name="gamekit-starter" target="16" />
     </bytecodeTargetLevel>
