@@ -1,0 +1,11 @@
+name: Package Deploy
+on:
+  release:
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy
+        run: mvn deploy
