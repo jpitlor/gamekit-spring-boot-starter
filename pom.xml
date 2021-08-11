@@ -10,6 +10,21 @@
 	<name>GameKit Spring Boot Starter</name>
 	<description>A framework for creating real time web based games easily</description>
 	<url>https://github.com/piticent123/gamekit-spring-boot-starter</url>
+	<scm>
+		<url>https://github.com/piticent123/gamekit-spring-boot-starter</url>
+	</scm>
+	<developers>
+		<developer>
+			<name>Jordan Pitlor</name>
+			<email>jordan@pitlor.dev</email>
+		</developer>
+	</developers>
+	<licenses>
+		<license>
+			<name>MIT</name>
+			<url>https://opensource.org/licenses/MIT</url>
+		</license>
+	</licenses>
 
 	<properties>
 		<maven.compiler.source>16</maven.compiler.source>
@@ -138,6 +153,20 @@
 					<nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
 					<autoReleaseAfterClose>true</autoReleaseAfterClose>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
