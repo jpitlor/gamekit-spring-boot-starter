@@ -27,7 +27,7 @@ interface Server {
     fun getGameCodes(): List<String>
     fun createGame(gameCode: String, adminUserId: UUID): String
     fun joinGame(gameCode: String, userId: UUID, settings: Map<String, Any>)
-    fun becomeAdmin(gameCode: String, userId: UUID): String
+    suspend fun becomeAdmin(gameCode: String, userId: UUID): String
 }
 
 interface Game {
