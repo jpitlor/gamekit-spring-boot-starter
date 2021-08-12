@@ -31,7 +31,7 @@ open class SocketConfig : WebSocketMessageBrokerConfigurer {
     override fun configureClientInboundChannel(registration: ChannelRegistration) {
         registration.interceptors(object : ChannelInterceptor {
             override fun preSend(message: Message<*>, channel: MessageChannel): Message<*> {
-                val accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor::class.java)
+                val accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor::class.java)!!
                 if (accessor.command == StompCommand.CONNECT) {
                     val uuid = accessor.getNativeHeader("uuid")?.get(0)
                     accessor.user = User(UUID.fromString(uuid))
