@@ -1,5 +1,8 @@
 package dev.pitlor.gamekit_spring_boot_starter
 
+import dev.pitlor.gamekit_spring_boot_starter.implementations.User
+import dev.pitlor.gamekit_spring_boot_starter.interfaces.IGame
+import dev.pitlor.gamekit_spring_boot_starter.interfaces.IServer
 import kotlinx.coroutines.runBlocking
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.context.event.EventListener
@@ -8,11 +11,22 @@ import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.messaging.simp.annotation.SendToUser
 import org.springframework.messaging.simp.annotation.SubscribeMapping
 import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.socket.messaging.SessionConnectEvent
 import org.springframework.web.socket.messaging.SessionDisconnectEvent
+import java.security.Principal
+
+@ControllerAdvice
+class CustomPrincipal {
+    @ModelAttribute
+    fun getPrincipal(principal: Principal?): User? {
+        if (principal == null) return null
+        return principal as User
+    }
+}
 
 @Controller
 open class StaticFiles {
@@ -23,8 +37,8 @@ open class StaticFiles {
 }
 
 @Controller
-@ConditionalOnBean(Server::class)
-class BaseController(private val server: Server, private val socket: SimpMessagingTemplate) {
+@ConditionalOnBean(IServer::class)
+class BaseController(private val server: IServer, private val socket: SimpMessagingTemplate) {
     @EventListener
     fun onConnect(e: SessionConnectEvent) {
         if (e.user == null) return
@@ -70,7 +84,7 @@ class BaseController(private val server: Server, private val socket: SimpMessagi
     }
 
     @SubscribeMapping("/games/{gameCode}")
-    fun getGame(@DestinationVariable gameCode: String): Game {
+    fun getGame(@DestinationVariable gameCode: String): IGame {
         return server.getGame(gameCode)
     }
 
@@ -88,7 +102,7 @@ class BaseController(private val server: Server, private val socket: SimpMessagi
         @DestinationVariable gameCode: String,
         @Payload settings: MutableMap<String, Any>,
         @ModelAttribute user: User
-    ): Game {
+    ): IGame {
         server.joinGame(gameCode, user.id, settings)
         return server.getGame(gameCode)
     }
@@ -99,7 +113,7 @@ class BaseController(private val server: Server, private val socket: SimpMessagi
         @DestinationVariable gameCode: String,
         @Payload settings: MutableMap<String, Any>,
         @ModelAttribute user: User
-    ): Game {
+    ): IGame {
         server.updateSettings(gameCode, user.id, settings)
         return server.getGame(gameCode)
     }
