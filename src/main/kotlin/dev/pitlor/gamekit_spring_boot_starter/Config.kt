@@ -2,6 +2,7 @@ package dev.pitlor.gamekit_spring_boot_starter
 
 import dev.pitlor.gamekit_spring_boot_starter.implementations.User
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.ConstructorBinding
 import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
@@ -21,7 +22,10 @@ const val SETTING_CONNECTED = "connected"
 @Configuration
 @ConfigurationProperties(prefix = "dev.pitlor")
 open class Config {
-
+    /**
+     * Persistence implementation for game data
+     */
+    lateinit var persistenceStrategy: String
 }
 
 @Configuration
