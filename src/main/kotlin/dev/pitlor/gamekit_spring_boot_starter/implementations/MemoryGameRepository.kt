@@ -2,6 +2,7 @@ package dev.pitlor.gamekit_spring_boot_starter.implementations
 
 import dev.pitlor.gamekit_spring_boot_starter.interfaces.IGame
 import dev.pitlor.gamekit_spring_boot_starter.interfaces.IGameRepository
+import dev.pitlor.gamekit_spring_boot_starter.interfaces.IPlayer
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
@@ -15,22 +16,22 @@ import java.util.*
     matchIfMissing = true
 )
 @ConditionalOnMissingBean(IGameRepository::class)
-class MemoryGameRepository : IGameRepository {
-    private val games = arrayListOf<IGame>()
+class MemoryGameRepository<P : IPlayer, G : IGame<P>> : IGameRepository<P, G> {
+    private val games = arrayListOf<G>()
 
-    override fun findAll(filter: (IGame) -> Boolean): List<IGame> {
+    override fun findAll(filter: (G) -> Boolean): List<G> {
         return games.filter(filter)
     }
 
-    override fun getAllByNotStarted(): List<IGame> {
+    override fun getAllByNotStarted(): List<G> {
         return games.filter { !it.isActive }
     }
 
-    override fun getByCode(gameCode: String): IGame? {
+    override fun getByCode(gameCode: String): G? {
         return games.find { it.code == gameCode }
     }
 
-    override fun add(game: IGame) {
+    override fun add(game: G) {
         games += game
     }
 

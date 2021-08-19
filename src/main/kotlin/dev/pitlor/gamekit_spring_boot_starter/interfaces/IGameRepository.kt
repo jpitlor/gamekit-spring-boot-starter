@@ -1,9 +1,9 @@
 package dev.pitlor.gamekit_spring_boot_starter.interfaces
 
-interface IGameRepository {
-    fun findAll(filter: (IGame) -> Boolean): List<IGame>
-    fun getAllByNotStarted(): List<IGame>
-    fun getByCode(gameCode: String): IGame?
-    fun add(game: IGame)
+interface IGameRepository<P : IPlayer, G : IGame<P>> {
+    fun findAll(filter: (G) -> Boolean): List<G>
+    fun getAllByNotStarted(): List<G>
+    fun getByCode(gameCode: String): G?
+    fun add(game: G)
     fun removeByCode(gameCode: String)
 }

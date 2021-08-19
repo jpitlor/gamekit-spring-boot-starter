@@ -9,14 +9,15 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 import java.util.*
 
 @Component
 @ConditionalOnMissingBean(IServer::class)
-open class Server(
-    private val gameRepository: IGameRepository,
-    private val gameFactory: (code: String, adminId: UUID) -> IGame,
-    private val playerFactory: (UUID, MutableMap<String, Any>) -> IPlayer
+open class Server<P : IPlayer, G : IGame<P>>(
+    private val gameRepository: IGameRepository<P, G>,
+    private val gameFactory: (code: String, adminId: UUID) -> G,
+    private val playerFactory: (UUID, MutableMap<String, Any>) -> P
 ) : IServer {
     private val mutex = Mutex()
 
@@ -34,10 +35,15 @@ open class Server(
         val player = game.players.find { it.id == userId }
         require(player != null) { "That player doesn't exist"}
 
-        player.settings = newSettings
+        player.settings.putAll(newSettings)
+        if (newSettings[SETTING_CONNECTED] == true) {
+            player.startOfTimeOffline = null
+        } else if (newSettings[SETTING_CONNECTED] == false) {
+            player.startOfTimeOffline = LocalDateTime.now()
+        }
     }
 
-    override fun getGame(gameCode: String): IGame {
+    override fun getGame(gameCode: String): G {
         val game = gameRepository.getByCode(gameCode)
 
         require(game != null) { "That game doesn't exist"}
