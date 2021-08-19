@@ -6,7 +6,7 @@
 
 	<groupId>dev.pitlor</groupId>
 	<artifactId>gamekit-spring-boot-starter</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.1</version>
 	<name>GameKit Spring Boot Starter</name>
 	<description>A framework for creating real time web based games easily</description>
 	<url>https://github.com/piticent123/gamekit-spring-boot-starter</url>
