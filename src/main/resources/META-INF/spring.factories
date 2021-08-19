@@ -4,4 +4,5 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   dev.pitlor.gamekit_spring_boot_starter.BaseController,\
   dev.pitlor.gamekit_spring_boot_starter.CustomPrincipal, \
   dev.pitlor.gamekit_spring_boot_starter.Config, \
-  dev.pitlor.gamekit_spring_boot_starter.Beans
+  dev.pitlor.gamekit_spring_boot_starter.Beans, \
+  dev.pitlor.gamekit_spring_boot_starter.implementations.MemoryGameRepository

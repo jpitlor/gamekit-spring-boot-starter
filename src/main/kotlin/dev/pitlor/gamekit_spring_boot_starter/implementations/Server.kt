@@ -3,6 +3,7 @@ package dev.pitlor.gamekit_spring_boot_starter.implementations
 import dev.pitlor.gamekit_spring_boot_starter.SETTING_CONNECTED
 import dev.pitlor.gamekit_spring_boot_starter.interfaces.IGame
 import dev.pitlor.gamekit_spring_boot_starter.interfaces.IGameRepository
+import dev.pitlor.gamekit_spring_boot_starter.interfaces.IPlayer
 import dev.pitlor.gamekit_spring_boot_starter.interfaces.IServer
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -15,7 +16,7 @@ import java.util.*
 open class Server(
     private val gameRepository: IGameRepository,
     private val gameFactory: (code: String, adminId: UUID) -> IGame,
-    private val playerFactory: (UUID, MutableMap<String, Any>) -> Player
+    private val playerFactory: (UUID, MutableMap<String, Any>) -> IPlayer
 ) : IServer {
     private val mutex = Mutex()
 
