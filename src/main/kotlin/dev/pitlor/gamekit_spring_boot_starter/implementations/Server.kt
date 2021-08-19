@@ -1,35 +1,83 @@
 package dev.pitlor.gamekit_spring_boot_starter.implementations
 
+import dev.pitlor.gamekit_spring_boot_starter.SETTING_CONNECTED
 import dev.pitlor.gamekit_spring_boot_starter.interfaces.IGame
+import dev.pitlor.gamekit_spring_boot_starter.interfaces.IGameRepository
 import dev.pitlor.gamekit_spring_boot_starter.interfaces.IServer
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import org.springframework.stereotype.Component
 import java.util.*
 
-open class Server : IServer {
+@Component
+@ConditionalOnMissingBean(IServer::class)
+open class Server(
+    private val gameRepository: IGameRepository,
+    private val gameFactory: (code: String, adminId: UUID) -> IGame,
+    private val playerFactory: (UUID, MutableMap<String, Any>) -> Player
+) : IServer {
+    private val mutex = Mutex()
+
     override fun findCodeOfGameWithPlayer(id: UUID): String? {
-        TODO("Not yet implemented")
+        return gameRepository
+            .findAll { game -> game.players.any { it.id == id } }
+            .firstOrNull()
+            ?.code
     }
 
     override fun updateSettings(gameCode: String, userId: UUID, newSettings: MutableMap<String, Any>) {
-        TODO("Not yet implemented")
+        val game = gameRepository.getByCode(gameCode)
+        require(game != null) { "That game doesn't exist"}
+
+        val player = game.players.find { it.id == userId }
+        require(player != null) { "That player doesn't exist"}
+
+        player.settings = newSettings
     }
 
     override fun getGame(gameCode: String): IGame {
-        TODO("Not yet implemented")
+        val game = gameRepository.getByCode(gameCode)
+
+        require(game != null) { "That game doesn't exist"}
+
+        return game
     }
 
     override fun getGameCodes(): List<String> {
-        TODO("Not yet implemented")
+        return gameRepository.getAllByNotStarted().map { it.code }
     }
 
     override fun createGame(gameCode: String, adminUserId: UUID): String {
-        TODO("Not yet implemented")
+        require(gameCode.isNotEmpty()) { "Code is empty" }
+        require(gameRepository.getByCode(gameCode) == null) { "That game does not exist" }
+
+        val game = gameFactory(gameCode, adminUserId)
+        gameRepository.add(game)
+
+        return "Game \"${gameCode}\" Created"
     }
 
     override fun joinGame(gameCode: String, userId: UUID, settings: MutableMap<String, Any>) {
-        TODO("Not yet implemented")
+        val game = gameRepository.getByCode(gameCode)
+        require(gameCode.isNotEmpty()) { "Code is empty" }
+        require(game != null) { "That game does not exist" }
+        require(game.players.find { it.id == userId } == null) { "You are already in that game!" }
+
+        settings[SETTING_CONNECTED] = true
+        val player = playerFactory(userId, settings)
+        game.players += player
     }
 
     override suspend fun becomeAdmin(gameCode: String, userId: UUID): String {
-        TODO("Not yet implemented")
+        mutex.withLock {
+            val game = gameRepository.getByCode(gameCode)
+
+            require(game != null) { "That game doesn't exist"}
+            check(game.players.find { it.id == game.adminId }?.startOfTimeOffline == null) { "Someone already claimed the admin spot" }
+            game.adminId = userId
+        }
+
+        return "You are now the game admin"
     }
 }
