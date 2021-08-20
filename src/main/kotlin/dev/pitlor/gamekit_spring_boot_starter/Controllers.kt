@@ -2,6 +2,7 @@ package dev.pitlor.gamekit_spring_boot_starter
 
 import dev.pitlor.gamekit_spring_boot_starter.implementations.User
 import dev.pitlor.gamekit_spring_boot_starter.interfaces.IGame
+import dev.pitlor.gamekit_spring_boot_starter.interfaces.IPlayer
 import dev.pitlor.gamekit_spring_boot_starter.interfaces.IServer
 import kotlinx.coroutines.runBlocking
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
@@ -46,7 +47,7 @@ class BaseController(private val server: IServer, private val socket: SimpMessag
         val user = e.user as User
         server.findCodeOfGameWithPlayer(user.id)?.let {
             server.updateSettings(it, user.id, mutableMapOf(SETTING_CONNECTED to true))
-            socket.convertAndSend("/topic/games/$it", server.getGame(it))
+            socket.convertAndSend("/topic/games/$it", server.getGame(it) as IGame<IPlayer>)
         }
     }
 
@@ -57,7 +58,7 @@ class BaseController(private val server: IServer, private val socket: SimpMessag
         val user = e.user as User
         server.findCodeOfGameWithPlayer(user.id)?.let {
             server.updateSettings(it, user.id, mutableMapOf(SETTING_CONNECTED to false))
-            socket.convertAndSend("/topic/games/$it", server.getGame(it))
+            socket.convertAndSend("/topic/games/$it", server.getGame(it) as IGame<IPlayer>)
         }
     }
 
@@ -84,7 +85,7 @@ class BaseController(private val server: IServer, private val socket: SimpMessag
     }
 
     @SubscribeMapping("/games/{gameCode}")
-    fun getGame(@DestinationVariable gameCode: String): IGame {
+    fun getGame(@DestinationVariable gameCode: String): IGame<IPlayer> {
         return server.getGame(gameCode)
     }
 
@@ -102,7 +103,7 @@ class BaseController(private val server: IServer, private val socket: SimpMessag
         @DestinationVariable gameCode: String,
         @Payload settings: MutableMap<String, Any>,
         @ModelAttribute user: User
-    ): IGame {
+    ): IGame<IPlayer> {
         server.joinGame(gameCode, user.id, settings)
         return server.getGame(gameCode)
     }
@@ -113,7 +114,7 @@ class BaseController(private val server: IServer, private val socket: SimpMessag
         @DestinationVariable gameCode: String,
         @Payload settings: MutableMap<String, Any>,
         @ModelAttribute user: User
-    ): IGame {
+    ): IGame<IPlayer> {
         server.updateSettings(gameCode, user.id, settings)
         return server.getGame(gameCode)
     }
@@ -122,7 +123,7 @@ class BaseController(private val server: IServer, private val socket: SimpMessag
     @SendToUser("/topic/successes")
     fun becomeAdmin(@DestinationVariable gameCode: String, @ModelAttribute user: User): String = runBlocking {
         val response = server.becomeAdmin(gameCode, user.id)
-        socket.convertAndSend("/topic/games/$gameCode", server.getGame(gameCode))
+        socket.convertAndSend("/topic/games/$gameCode", server.getGame(gameCode) as IGame<IPlayer>)
         return@runBlocking response
     }
 }
