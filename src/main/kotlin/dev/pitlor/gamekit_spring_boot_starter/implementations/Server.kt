@@ -18,7 +18,7 @@ open class Server<P : IPlayer, G : IGame<P>>(
     private val gameRepository: IGameRepository<P, G>,
     private val gameFactory: (code: String, adminId: UUID) -> G,
     private val playerFactory: (UUID, MutableMap<String, Any>) -> P
-) : IServer {
+) : IServer<P, G> {
     private val mutex = Mutex()
 
     override fun findCodeOfGameWithPlayer(id: UUID): String? {

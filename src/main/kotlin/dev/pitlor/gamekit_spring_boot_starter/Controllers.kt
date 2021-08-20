@@ -39,7 +39,7 @@ open class StaticFiles {
 
 @Controller
 @ConditionalOnBean(IServer::class)
-class BaseController(private val server: IServer, private val socket: SimpMessagingTemplate) {
+class BaseController(private val server: IServer<IPlayer, IGame<IPlayer>>, private val socket: SimpMessagingTemplate) {
     @EventListener
     fun onConnect(e: SessionConnectEvent) {
         if (e.user == null) return
@@ -47,7 +47,7 @@ class BaseController(private val server: IServer, private val socket: SimpMessag
         val user = e.user as User
         server.findCodeOfGameWithPlayer(user.id)?.let {
             server.updateSettings(it, user.id, mutableMapOf(SETTING_CONNECTED to true))
-            socket.convertAndSend("/topic/games/$it", server.getGame(it) as IGame<IPlayer>)
+            socket.convertAndSend("/topic/games/$it", server.getGame(it))
         }
     }
 
@@ -58,7 +58,7 @@ class BaseController(private val server: IServer, private val socket: SimpMessag
         val user = e.user as User
         server.findCodeOfGameWithPlayer(user.id)?.let {
             server.updateSettings(it, user.id, mutableMapOf(SETTING_CONNECTED to false))
-            socket.convertAndSend("/topic/games/$it", server.getGame(it) as IGame<IPlayer>)
+            socket.convertAndSend("/topic/games/$it", server.getGame(it))
         }
     }
 
@@ -123,7 +123,7 @@ class BaseController(private val server: IServer, private val socket: SimpMessag
     @SendToUser("/topic/successes")
     fun becomeAdmin(@DestinationVariable gameCode: String, @ModelAttribute user: User): String = runBlocking {
         val response = server.becomeAdmin(gameCode, user.id)
-        socket.convertAndSend("/topic/games/$gameCode", server.getGame(gameCode) as IGame<IPlayer>)
+        socket.convertAndSend("/topic/games/$gameCode", server.getGame(gameCode))
         return@runBlocking response
     }
 }
