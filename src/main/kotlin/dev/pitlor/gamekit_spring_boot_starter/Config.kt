@@ -17,6 +17,12 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
 import java.util.*
 
+/**
+ * The key for the setting specifying if a user is connected or not.
+ *
+ * This can be used on the front end to make online indicators. Technically it can also be used by the backend,
+ * although uses are limited.
+ */
 const val SETTING_CONNECTED = "connected"
 
 @Configuration
