@@ -9,7 +9,7 @@ interface IGame<P : IPlayer> {
     var isActive: Boolean
     var adminId: UUID
 
-    fun safeGetPlayer(id: UUID): IPlayer {
+    fun safeGetPlayer(id: UUID): P {
         val player = players.find { it.id == id }
         require(player != null) { "That player is not in this game" }
 

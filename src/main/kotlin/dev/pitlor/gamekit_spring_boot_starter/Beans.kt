@@ -1,7 +1,6 @@
 package dev.pitlor.gamekit_spring_boot_starter
 
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.kotlin.kotlinModule
 import dev.pitlor.gamekit_spring_boot_starter.implementations.Game
 import dev.pitlor.gamekit_spring_boot_starter.implementations.Player
 import dev.pitlor.gamekit_spring_boot_starter.interfaces.IGame
@@ -16,7 +15,7 @@ open class Beans {
     @ConditionalOnMissingBean
     @Bean
     open fun getKotlinModule(): KotlinModule {
-        return kotlinModule()
+        return KotlinModule.Builder().build()
     }
 
     @ConditionalOnMissingBean
