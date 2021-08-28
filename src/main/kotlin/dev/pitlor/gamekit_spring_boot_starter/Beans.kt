@@ -14,7 +14,7 @@ import java.util.*
 open class Beans {
     @ConditionalOnMissingBean
     @Bean
-    open fun getKotlinModule(): KotlinModule {
+    open fun kotlinModule(): KotlinModule {
         return KotlinModule.Builder().build()
     }
 

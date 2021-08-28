@@ -63,8 +63,10 @@ open class StaticFiles {
  * benefit without this controller.
  */
 @Controller
-@ConditionalOnBean(IServer::class)
-class BaseController(private val server: IServer<IPlayer, IGame<IPlayer>>, private val socket: SimpMessagingTemplate) {
+class BaseController<P : IPlayer, G : IGame<P>>(
+    private val server: IServer<P, G>,
+    private val socket: SimpMessagingTemplate
+) {
     /**
      * We listen for "onConnect" events to update the "connected" setting on the user, which (if implemented) updates
      * indicators in the client, and, if this user is the admin of a game, lets the client know if/when users can claim
@@ -154,7 +156,7 @@ class BaseController(private val server: IServer<IPlayer, IGame<IPlayer>>, priva
      * update.
      */
     @SubscribeMapping("/games/{gameCode}")
-    fun getGame(@DestinationVariable gameCode: String): IGame<IPlayer> {
+    fun getGame(@DestinationVariable gameCode: String): G {
         return server.getGame(gameCode)
     }
 
@@ -183,7 +185,7 @@ class BaseController(private val server: IServer<IPlayer, IGame<IPlayer>>, priva
         @DestinationVariable gameCode: String,
         @Payload settings: MutableMap<String, Any>,
         @ModelAttribute user: User
-    ): IGame<IPlayer> {
+    ): G {
         server.joinGame(gameCode, user.id, settings)
         return server.getGame(gameCode)
     }
@@ -198,7 +200,7 @@ class BaseController(private val server: IServer<IPlayer, IGame<IPlayer>>, priva
         @DestinationVariable gameCode: String,
         @Payload settings: MutableMap<String, Any>,
         @ModelAttribute user: User
-    ): IGame<IPlayer> {
+    ): G {
         server.updateSettings(gameCode, user.id, settings)
         return server.getGame(gameCode)
     }
