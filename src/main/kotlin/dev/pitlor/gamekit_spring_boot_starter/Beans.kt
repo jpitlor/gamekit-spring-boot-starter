@@ -6,7 +6,6 @@ import dev.pitlor.gamekit_spring_boot_starter.implementations.Game
 import dev.pitlor.gamekit_spring_boot_starter.implementations.Player
 import dev.pitlor.gamekit_spring_boot_starter.interfaces.IGame
 import dev.pitlor.gamekit_spring_boot_starter.interfaces.IPlayer
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
