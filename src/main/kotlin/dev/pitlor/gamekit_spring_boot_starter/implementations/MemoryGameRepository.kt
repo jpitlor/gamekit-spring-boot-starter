@@ -16,7 +16,7 @@ import java.util.*
     havingValue = "memory",
     matchIfMissing = true
 )
-class MemoryGameRepository<P : IPlayer, G : IGame<P>> : IGameRepository<P, G> {
+open class MemoryGameRepository<P : IPlayer, G : IGame<P>> : IGameRepository<P, G> {
     private val games = arrayListOf<G>()
 
     override fun findAll(filter: (G) -> Boolean): List<G> {
